@@ -36,7 +36,7 @@ public class PatientsController : ControllerBase
         {
             FullName = request.FullName,
             PhoneNumber = request.PhoneNumber,
-            DateOfBirth = request.DateOfBirth.Value
+            DateOfBirth = request.DateOfBirth!.Value
         };
 
         Patient created = _repository.Add(patient);
