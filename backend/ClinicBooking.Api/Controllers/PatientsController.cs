@@ -21,9 +21,24 @@ public class PatientsController : ControllerBase
         return _repository.GetAll();
     }
 
-    [HttpPost]
-    public ActionResult<Patient> Create(Patient patient)
+        [HttpPost]
+    public ActionResult<Patient> Create(CreatePatientRequest request)
     {
+        DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+
+        if (request.DateOfBirth > today)
+        {
+            ModelState.AddModelError("DateOfBirth", "Date of birth can't be in the future.");
+            return ValidationProblem(ModelState);
+        }
+
+        Patient patient = new Patient
+        {
+            FullName = request.FullName,
+            PhoneNumber = request.PhoneNumber,
+            DateOfBirth = request.DateOfBirth.Value
+        };
+
         Patient created = _repository.Add(patient);
         return StatusCode(201, created);
     }
