@@ -12,6 +12,19 @@ public class PatientRepository
         return _patients;
     }
 
+        public Patient? GetById(int id)
+    {
+        foreach (Patient patient in _patients)
+        {
+            if (patient.Id == id)
+            {
+                return patient;
+            }
+        }
+
+        return null;
+    }
+
     public Patient Add(Patient patient)
     {
         patient.Id = _nextId;

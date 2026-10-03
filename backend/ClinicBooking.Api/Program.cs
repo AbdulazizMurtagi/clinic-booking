@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddSingleton<DoctorRepository>();
 builder.Services.AddSingleton<PatientRepository>();
+builder.Services.AddSingleton<AppointmentRepository>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 

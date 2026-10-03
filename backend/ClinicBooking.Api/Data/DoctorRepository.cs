@@ -15,4 +15,16 @@ public class DoctorRepository
     {
         return _doctors;
     }
+        public Doctor? GetById(int id)
+    {
+        foreach (Doctor doctor in _doctors)
+        {
+            if (doctor.Id == id)
+            {
+                return doctor;
+            }
+        }
+
+        return null;
+    }
 }
