@@ -1,4 +1,5 @@
 using ClinicBooking.Api.Data;
+using ClinicBooking.Api.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,6 +8,7 @@ builder.Services.AddControllers();
 builder.Services.AddSingleton<DoctorRepository>();
 builder.Services.AddSingleton<PatientRepository>();
 builder.Services.AddSingleton<AppointmentRepository>();
+builder.Services.AddSingleton<BookingService>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
