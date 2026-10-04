@@ -1,12 +1,18 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
+import { ClinicApi } from './clinic-api';
+import { Doctor } from './models';
 
 @Component({
-  imports: [RouterOutlet],
   selector: 'app-root',
-  styleUrl: './app.css',
   templateUrl: './app.html',
+  styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('frontend');
+  private api = inject(ClinicApi);
+
+  doctors = signal<Doctor[]>([]);
+
+  constructor() {
+    this.api.getDoctors().subscribe(list => this.doctors.set(list));
+  }
 }
