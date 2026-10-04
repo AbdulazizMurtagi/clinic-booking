@@ -57,6 +57,7 @@ public class AppointmentRepository
                 result.Add(appointment);
             }
         }
+        result.Sort((first, second) => first.StartTime.CompareTo(second.StartTime));
 
         return result;
     }

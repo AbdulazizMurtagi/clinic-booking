@@ -1,3 +1,4 @@
+using ClinicBooking.Api.Data;
 using ClinicBooking.Api.Models;
 using ClinicBooking.Api.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +10,12 @@ namespace ClinicBooking.Api.Controllers;
 public class AppointmentsController : ControllerBase
 {
     private readonly BookingService _bookingService;
+    private readonly AppointmentRepository _appointments;
 
-    public AppointmentsController(BookingService bookingService)
+    public AppointmentsController(BookingService bookingService, AppointmentRepository appointments)
     {
         _bookingService = bookingService;
+        _appointments = appointments;
     }
 
     [HttpPost]
@@ -40,5 +43,25 @@ public class AppointmentsController : ControllerBase
         }
 
         return Problem(detail: result.ErrorMessage, statusCode: 400);
+    }
+
+    [HttpGet]
+    public List<Appointment> GetByDoctorAndDate([FromQuery] int doctorId, [FromQuery] DateOnly date)
+    {
+        return _appointments.GetByDoctorAndDate(doctorId, date);
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult Cancel(int id)
+    {
+        Appointment? appointment = _appointments.GetById(id);
+
+        if (appointment == null)
+        {
+            return Problem(detail: "Appointment not found.", statusCode: 404);
+        }
+
+        _appointments.Remove(appointment);
+        return NoContent();
     }
 }
