@@ -1,0 +1,14 @@
+services:
+  backend:
+    build: ./backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5160:8080"
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
