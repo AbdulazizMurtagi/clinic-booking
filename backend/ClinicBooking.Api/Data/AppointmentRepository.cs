@@ -61,4 +61,16 @@ public class AppointmentRepository
 
         return result;
     }
+        public bool HasUpcomingAppointment(int patientId, DateTime now)
+    {
+        foreach (Appointment appointment in _appointments)
+        {
+            if (appointment.PatientId == patientId && appointment.StartTime >= now)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

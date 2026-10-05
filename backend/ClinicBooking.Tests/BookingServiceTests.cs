@@ -19,6 +19,7 @@ public class BookingServiceTests
     {
         _service = new BookingService(_doctors, _patients, _appointments);
         _patients.Add(new Patient { FullName = "Sara Ali", PhoneNumber = "55512345", DateOfBirth = new DateOnly(2000, 9, 9) });
+        _patients.Add(new Patient { FullName = "Omar Khalid", PhoneNumber = "55598765", DateOfBirth = new DateOnly(1990, 3, 12) });
     }
 
     // ---------- Time rules ----------
@@ -134,7 +135,7 @@ public class BookingServiceTests
         DateTime start = new DateTime(2026, 10, 4, 9, 0, 0);
         _service.Book(1, 1, start, _now);
 
-        BookingResult other = _service.Book(2, 1, start, _now);
+        BookingResult other = _service.Book(2, 2, start, _now);
 
         Assert.Equal(BookingStatus.Success, other.Status);
     }
@@ -169,5 +170,38 @@ public class BookingServiceTests
         BookingResult result = _service.Book(1, 500, start, _now);
 
         Assert.Equal(BookingStatus.PatientNotFound, result.Status);
+    }
+
+    // ---------- One upcoming appointment per patient ----------
+
+    [Fact]
+    public void Book_rejects_second_upcoming_appointment_for_same_patient()
+    {
+        _service.Book(1, 1, new DateTime(2026, 10, 4, 9, 0, 0), _now);
+
+        BookingResult second = _service.Book(2, 1, new DateTime(2026, 10, 5, 10, 0, 0), _now);
+
+        Assert.Equal(BookingStatus.PatientAlreadyBooked, second.Status);
+    }
+
+    [Fact]
+    public void Patient_can_book_again_after_cancelling()
+    {
+        BookingResult first = _service.Book(1, 1, new DateTime(2026, 10, 4, 9, 0, 0), _now);
+        _appointments.Remove(first.Appointment!);
+
+        BookingResult again = _service.Book(2, 1, new DateTime(2026, 10, 5, 10, 0, 0), _now);
+
+        Assert.Equal(BookingStatus.Success, again.Status);
+    }
+
+    [Fact]
+    public void Past_appointment_does_not_block_a_new_booking()
+    {
+        _appointments.Add(new Appointment { DoctorId = 1, PatientId = 1, StartTime = new DateTime(2026, 10, 1, 9, 0, 0) });
+
+        BookingResult result = _service.Book(1, 1, new DateTime(2026, 10, 4, 9, 0, 0), _now);
+
+        Assert.Equal(BookingStatus.Success, result.Status);
     }
 }

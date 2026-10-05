@@ -8,7 +8,8 @@ public enum BookingStatus
     InvalidTime,
     DoctorNotFound,
     PatientNotFound,
-    SlotTaken
+    SlotTaken,
+    PatientAlreadyBooked
 }
 
 public class BookingResult

@@ -37,7 +37,7 @@ public class AppointmentsController : ControllerBase
             return Problem(detail: result.ErrorMessage, statusCode: 404);
         }
 
-        if (result.Status == BookingStatus.SlotTaken)
+               if (result.Status == BookingStatus.SlotTaken || result.Status == BookingStatus.PatientAlreadyBooked)
         {
             return Problem(detail: result.ErrorMessage, statusCode: 409);
         }

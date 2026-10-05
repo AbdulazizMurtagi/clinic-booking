@@ -42,6 +42,11 @@ public class BookingService
             return new BookingResult { Status = BookingStatus.SlotTaken, ErrorMessage = "This slot is already booked." };
         }
 
+        if (_appointments.HasUpcomingAppointment(patientId, now))
+        {
+            return new BookingResult { Status = BookingStatus.PatientAlreadyBooked, ErrorMessage = "This patient already has an upcoming appointment. Cancel it before booking another." };
+        }
+        
         Appointment appointment = new Appointment
         {
             DoctorId = doctorId,
