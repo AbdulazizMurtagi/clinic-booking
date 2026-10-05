@@ -30,4 +30,51 @@
       }
     </ul>
   }
-}
+}<section class="patients">
+  <h2>Patient</h2>
+
+  <label>
+    Book for
+    <select #patientSelect (change)="selectPatient(patientSelect.value)">
+      <option value="" disabled [selected]="selectedPatientId() === null">Choose a patient</option>
+      @for (patient of patients(); track patient.id) {
+        <option [value]="patient.id" [selected]="patient.id === selectedPatientId()">
+          {{ patient.fullName }} ({{ patient.phoneNumber }})
+        </option>
+      }
+    </select>
+  </label>
+
+  <form [formGroup]="patientForm" (ngSubmit)="createPatient()" class="patient-form">
+    <h3>New patient</h3>
+
+    <label>
+      Full name
+      <input formControlName="fullName">
+    </label>
+    @if (patientForm.controls.fullName.touched && patientForm.controls.fullName.invalid) {
+      <span class="error">Full name must be between 2 and 100 characters.</span>
+    }
+
+    <label>
+      Phone number
+      <input formControlName="phoneNumber" placeholder="55512345">
+    </label>
+    @if (patientForm.controls.phoneNumber.touched && patientForm.controls.phoneNumber.invalid) {
+      <span class="error">Phone number must be 8 to 15 digits and may start with +.</span>
+    }
+
+    <label>
+      Date of birth
+      <input type="date" formControlName="dateOfBirth" [max]="today">
+    </label>
+    @if (patientForm.controls.dateOfBirth.touched && patientForm.controls.dateOfBirth.invalid) {
+      <span class="error">Date of birth is required.</span>
+    }
+
+    <button type="submit">Add patient</button>
+
+    @if (patientError()) { <p class="error">{{ patientError() }}</p> }
+    @if (patientMessage()) { <p class="success">{{ patientMessage() }}</p> }
+  </form>
+</section>
