@@ -1,8 +1,33 @@
 <h1>Clinic Booking</h1>
 
-<label for="doctor">Doctor</label>
-<select id="doctor">
-  @for (doctor of doctors(); track doctor.id) {
-    <option [value]="doctor.id">{{ doctor.name }} ({{ doctor.specialty }})</option>
+<section class="pickers">
+  <label>
+    Doctor
+    <select #doctorSelect (change)="selectDoctor(doctorSelect.value)">
+      <option value="" disabled selected>Choose a doctor</option>
+      @for (doctor of doctors(); track doctor.id) {
+        <option [value]="doctor.id">{{ doctor.name }} ({{ doctor.specialty }})</option>
+      }
+    </select>
+  </label>
+
+  <label>
+    Date
+    <input type="date" #dateInput (change)="selectDate(dateInput.value)">
+  </label>
+</section>
+
+@if (selectedDoctorId() !== null && selectedDate() !== '') {
+  @if (isClosedDay()) {
+    <p class="notice">The clinic is closed on Fridays and Saturdays. Please choose another date.</p>
+  } @else {
+    <ul class="slots">
+      @for (slot of slots(); track slot.start) {
+        <li [class]="slot.status">
+          <span class="time">{{ slot.time }}</span>
+          <span>{{ slot.status }}</span>
+        </li>
+      }
+    </ul>
   }
-</select>
+}
