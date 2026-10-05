@@ -1,21 +1,73 @@
-:host { display: block; max-width: 760px; margin: 0 auto; padding: 24px 16px; font-family: system-ui, sans-serif; color: #1d2a33; }
-h1 { margin: 0 0 20px; }
-.pickers { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
-label { display: grid; gap: 6px; font-weight: 500; }
-select, input { padding: 8px; font: inherit; }
-.notice { padding: 12px; background: #fff4e0; border-radius: 8px; }
-.slots { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
-.slots li { display: flex; justify-content: space-between; padding: 10px 12px; border-radius: 8px; border: 1px solid #d3dde3; }
-.time { font-weight: 600; }
-.Free { background: #e6f4ec; }
-.Booked { background: #fde8e8; }
-.Past { background: #eeeeee; color: #888888; }
-.patients { margin-top: 32px; display: grid; gap: 16px; }
-.patient-form { display: grid; gap: 10px; max-width: 360px; padding: 16px; border: 1px solid #d3dde3; border-radius: 8px; }
-h2, h3 { margin: 0; }
-button { padding: 9px 14px; font: inherit; cursor: pointer; border-radius: 6px; border: 1px solid #2c6e8f; background: #2c6e8f; color: white; }
-.error { color: #b23b3b; font-size: 0.9rem; margin: 0; }
-.success { color: #2f7d5b; margin: 0; }
-.appointments { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
-.appointments th, .appointments td { text-align: left; padding: 8px; border-bottom: 1px solid #d3dde3; }
-button.cancel { background: white; color: #b23b3b; border-color: #b23b3b; }
+:host { display: block; max-width: 1000px; margin: 0 auto; padding: 40px 20px 72px; }
+
+/* Header */
+h1 { display: flex; align-items: center; gap: 14px; margin: 0; font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
+
+h2 { margin: 32px 0 12px; font-size: 1.15rem; font-weight: 700; }
+
+/* Card look shared by the pickers, the table and the form */
+.pickers, .appointments, .patient-form {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 1px 2px rgba(16, 52, 62, 0.06), 0 10px 30px rgba(16, 52, 62, 0.07);
+}
+
+/* Doctor, date and patient pickers */
+.pickers { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; padding: 22px; margin: 28px 0; }
+label { display: grid; gap: 7px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5b7682; }
+select, input {
+  font: inherit; font-size: 0.95rem; font-weight: 500; letter-spacing: normal; text-transform: none;
+  color: #17303a; background: #f7fafb; padding: 11px 13px; border: 1px solid #d3e0e5; border-radius: 11px;
+}
+select:focus, input:focus { outline: none; border-color: #14b8a6; box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2); }
+
+/* Closed-day notice */
+.notice { padding: 14px 18px; border-radius: 14px; background: #fff6e5; color: #8a5a00; font-weight: 500; }
+
+/* Slots */
+.slots { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.slots li {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  min-height: 58px; padding: 12px 14px; border-radius: 14px;
+  background: #ffffff; border: 1px solid #e1ebee; font-size: 0.85rem; font-weight: 600;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.slots li.Free { border-color: #a7e3d6; }
+.slots li.Free:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(15, 118, 110, 0.15); }
+.slots li.Booked { background: #fff1f1; border-color: #f6c8c8; color: #a33a3a; }
+.slots li.Past { background: #eef2f4; border-color: #eef2f4; color: #9cabb3; }
+.time { font-size: 1rem; font-weight: 700; font-variant-numeric: tabular-nums; color: inherit; }
+.slots li.Free .time { color: #17303a; }
+
+/* Buttons */
+button {
+  font: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer;
+  padding: 8px 16px; border: 0; border-radius: 999px; background: #0f766e; color: #ffffff;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+button:hover { background: #115e59; transform: translateY(-1px); }
+button.cancel { background: transparent; color: #b42318; border: 1px solid #f2b8b1; }
+button.cancel:hover { background: #fff1f0; }
+
+/* Messages */
+.error, .success { display: inline-block; margin: 14px 0 0; padding: 9px 14px; border-radius: 10px; font-size: 0.9rem; font-weight: 500; }
+.error { background: #fdecea; color: #b42318; }
+.success { background: #e6f6f1; color: #0f766e; }
+.patient-form .error { display: block; margin: 0; padding: 0; background: none; font-size: 0.82rem; }
+
+/* Appointments table */
+.appointments { width: 100%; border-collapse: separate; border-spacing: 0; overflow: hidden; }
+.appointments th { text-align: left; padding: 12px 18px; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: #5b7682; background: #f4f8f9; }
+.appointments td { padding: 14px 18px; border-top: 1px solid #edf2f4; font-weight: 500; }
+.appointments td:first-child { font-weight: 700; font-variant-numeric: tabular-nums; }
+.appointments td:last-child { text-align: right; }
+
+/* New patient form */
+.patients { margin-top: 36px; }
+.patient-form { display: grid; gap: 12px; max-width: 420px; padding: 24px; }
+.patient-form h2 { margin: 0 0 4px; }
+.patient-form button[type="submit"] { justify-self: start; padding: 11px 22px; margin-top: 4px; }
+/* Header with logo */
+.brand { display: flex; align-items: center; gap: 16px; }
+.logo { width: 60px; height: 60px; border-radius: 16px; box-shadow: 0 8px 20px rgba(15, 118, 110, 0.3); }
+.tagline { margin: 2px 0 0; font-size: 0.85rem; font-weight: 500; color: #5b7682; }
