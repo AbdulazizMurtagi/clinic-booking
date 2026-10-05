@@ -20,7 +20,7 @@ function todayString(): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
-// NEW: turns any backend error reply into one readable sentence
+// Turns any backend error reply into one readable sentence
 function errorMessage(err: HttpErrorResponse): string {
   const body = err.error;
   if (body?.errors) return Object.values(body.errors).flat().join(' ');
@@ -44,13 +44,15 @@ export class App {
   selectedDate = signal<string>('');
   appointments = signal<Appointment[]>([]);
 
-  // NEW: patients
   patients = signal<Patient[]>([]);
   selectedPatientId = signal<number | null>(null);
   patientMessage = signal('');
   patientError = signal('');
 
-  // NEW: the patient form and its rules (same rules as CreatePatientRequest)
+  // NEW (Step 4): messages for booking
+  bookingMessage = signal('');
+  bookingError = signal('');
+
   patientForm = new FormGroup({
     fullName: new FormControl('', {
       nonNullable: true,
@@ -117,17 +119,14 @@ export class App {
     this.api.getAppointments(doctorId, date).subscribe(list => this.appointments.set(list));
   }
 
-  // NEW
   loadPatients() {
     this.api.getPatients().subscribe(list => this.patients.set(list));
   }
 
-  // NEW
   selectPatient(id: string) {
     this.selectedPatientId.set(Number(id));
   }
 
-  // NEW
   createPatient() {
     this.patientMessage.set('');
     this.patientError.set('');
@@ -152,6 +151,32 @@ export class App {
         this.selectedPatientId.set(patient.id);
       },
       error: err => this.patientError.set(errorMessage(err))
+    });
+  }
+
+  // NEW (Step 4): book a free slot for the chosen patient
+  bookSlot(slot: Slot) {
+    this.bookingMessage.set('');
+    this.bookingError.set('');
+
+    const doctorId = this.selectedDoctorId();
+    const patientId = this.selectedPatientId();
+
+    if (patientId === null) {
+      this.bookingError.set('Choose a patient before booking.');
+      return;
+    }
+    if (doctorId === null) return;
+
+    this.api.bookAppointment(doctorId, patientId, slot.start).subscribe({
+      next: () => {
+        this.bookingMessage.set(`Booked ${slot.time}.`);
+        this.loadAppointments();
+      },
+      error: err => {
+        this.bookingError.set(errorMessage(err));
+        this.loadAppointments();
+      }
     });
   }
 }

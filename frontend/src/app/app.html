@@ -15,23 +15,6 @@
     Date
     <input type="date" #dateInput (change)="selectDate(dateInput.value)">
   </label>
-</section>
-
-@if (selectedDoctorId() !== null && selectedDate() !== '') {
-  @if (isClosedDay()) {
-    <p class="notice">The clinic is closed on Fridays and Saturdays. Please choose another date.</p>
-  } @else {
-    <ul class="slots">
-      @for (slot of slots(); track slot.start) {
-        <li [class]="slot.status">
-          <span class="time">{{ slot.time }}</span>
-          <span>{{ slot.status }}</span>
-        </li>
-      }
-    </ul>
-  }
-}<section class="patients">
-  <h2>Patient</h2>
 
   <label>
     Book for
@@ -44,9 +27,33 @@
       }
     </select>
   </label>
+</section>
 
+@if (selectedDoctorId() !== null && selectedDate() !== '') {
+  @if (isClosedDay()) {
+    <p class="notice">The clinic is closed on Fridays and Saturdays. Please choose another date.</p>
+  } @else {
+    <ul class="slots">
+      @for (slot of slots(); track slot.start) {
+        <li [class]="slot.status">
+          <span class="time">{{ slot.time }}</span>
+          @if (slot.status === 'Free') {
+            <button type="button" (click)="bookSlot(slot)">Book</button>
+          } @else {
+            <span>{{ slot.status }}</span>
+          }
+        </li>
+      }
+    </ul>
+
+    @if (bookingError()) { <p class="error">{{ bookingError() }}</p> }
+    @if (bookingMessage()) { <p class="success">{{ bookingMessage() }}</p> }
+  }
+}
+
+<section class="patients">
   <form [formGroup]="patientForm" (ngSubmit)="createPatient()" class="patient-form">
-    <h3>New patient</h3>
+    <h2>New patient</h2>
 
     <label>
       Full name
