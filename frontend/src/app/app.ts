@@ -173,6 +173,31 @@ export class App {
         this.bookingMessage.set(`Booked ${slot.time}.`);
         this.loadAppointments();
       },
+            error: err => {
+        this.bookingError.set(errorMessage(err));
+        this.loadAppointments();
+      }
+    });
+  }
+
+  // NEW (Step 5): show a patient's name instead of their number
+  patientName(id: number): string {
+    return this.patients().find(p => p.id === id)?.fullName ?? `Patient #${id}`;
+  }
+
+  // NEW (Step 5): cancel an appointment
+  cancel(appointment: Appointment) {
+    this.bookingMessage.set('');
+    this.bookingError.set('');
+
+    const time = appointment.startTime.slice(11, 16);
+    if (!confirm(`Cancel the appointment at ${time}?`)) return;
+
+    this.api.cancelAppointment(appointment.id).subscribe({
+      next: () => {
+        this.bookingMessage.set(`Cancelled the appointment at ${time}.`);
+        this.loadAppointments();
+      },
       error: err => {
         this.bookingError.set(errorMessage(err));
         this.loadAppointments();

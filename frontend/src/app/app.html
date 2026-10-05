@@ -48,6 +48,26 @@
 
     @if (bookingError()) { <p class="error">{{ bookingError() }}</p> }
     @if (bookingMessage()) { <p class="success">{{ bookingMessage() }}</p> }
+
+    <h2>Appointments</h2>
+    @if (appointments().length === 0) {
+      <p>No appointments for this doctor on this date.</p>
+    } @else {
+      <table class="appointments">
+        <thead>
+          <tr><th>Time</th><th>Patient</th><th></th></tr>
+        </thead>
+        <tbody>
+          @for (appointment of appointments(); track appointment.id) {
+            <tr>
+              <td>{{ appointment.startTime.slice(11, 16) }}</td>
+              <td>{{ patientName(appointment.patientId) }}</td>
+              <td><button type="button" class="cancel" (click)="cancel(appointment)">Cancel</button></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
   }
 }
 
